@@ -1,0 +1,30 @@
+--- org.eclipse.datatools.sqldevtools.feature/feature.xml	2009-04-24 10:39:24.000000000 +0100
++++ org.eclipse.datatools.sqldevtools.feature/feature.xml	2009-07-05 21:56:31.156615551 +0100
+@@ -118,13 +118,6 @@
+          unpack="false"/>
+ 
+    <plugin
+-         id="org.eclipse.datatools.help"
+-         download-size="0"
+-         install-size="0"
+-         version="0.0.0"
+-         unpack="false"/>
+-
+-   <plugin
+          id="org.eclipse.datatools.sqltools.db.generic"
+          download-size="0"
+          install-size="0"
+--- org.eclipse.datatools.sqldevtools.results.feature/feature.xml	2008-11-14 06:30:00.000000000 +0000
++++ org.eclipse.datatools.sqldevtools.results.feature/feature.xml	2009-07-06 22:42:45.189007201 +0100
+@@ -39,11 +39,4 @@
+          version="0.0.0"
+          unpack="false"/>
+ 
+-   <plugin
+-         id="org.eclipse.datatools.connectivity"
+-         download-size="0"
+-         install-size="0"
+-         version="0.0.0"
+-         unpack="false"/>
+-
+ </feature>

@@ -1,0 +1,344 @@
+Index: src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ConnectionAdapter.java
+===================================================================
+RCS file: /cvsroot/datatools/org.eclipse.datatools.connectivity/plugins/org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ConnectionAdapter.java,v
+retrieving revision 1.1
+diff -u -r1.1 ConnectionAdapter.java
+--- org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ConnectionAdapter.java	9 Dec 2005 21:13:16 -0000	1.1
++++ org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ConnectionAdapter.java	28 Feb 2008 17:35:43 -0000
+@@ -10,15 +10,23 @@
+  *******************************************************************************/
+ package org.eclipse.datatools.connectivity.sqm.internal.core.connection;
+ 
++import java.sql.Array;
++import java.sql.Blob;
+ import java.sql.CallableStatement;
++import java.sql.Clob;
+ import java.sql.Connection;
+ import java.sql.DatabaseMetaData;
++import java.sql.NClob;
+ import java.sql.PreparedStatement;
++import java.sql.SQLClientInfoException;
+ import java.sql.SQLException;
+ import java.sql.SQLWarning;
++import java.sql.SQLXML;
+ import java.sql.Savepoint;
+ import java.sql.Statement;
++import java.sql.Struct;
+ import java.util.Map;
++import java.util.Properties;
+ 
+ import org.eclipse.core.runtime.IStatus;
+ import org.eclipse.core.runtime.Status;
+@@ -183,18 +191,74 @@
+ 	}
+ 
+ 	public CallableStatement prepareCall(String arg0, int arg1, int arg2, int arg3) throws SQLException {
+-		return prepareCall(arg0, arg1, arg2, arg3);
++		return connection.prepareCall(arg0, arg1, arg2, arg3);
+ 	}
+ 
+ 	public PreparedStatement prepareStatement(String arg0, int arg1) throws SQLException {
+-		return prepareStatement(arg0, arg1);
++		return connection.prepareStatement(arg0, arg1);
+ 	}
+ 
+ 	public PreparedStatement prepareStatement(String arg0, int[] arg1) throws SQLException {
+-		return prepareStatement(arg0, arg1);
++		return connection.prepareStatement(arg0, arg1);
+ 	}
+ 
+ 	public PreparedStatement prepareStatement(String arg0, String[] arg1) throws SQLException {
+-		return prepareStatement(arg0, arg1);
++		return connection.prepareStatement(arg0, arg1);
++	}
++
++	public Array createArrayOf(String typeName, Object[] elements)
++			throws SQLException {
++		return connection.createArrayOf(typeName, elements);
++	}
++
++	public Blob createBlob() throws SQLException {
++		return connection.createBlob();
++	}
++
++	public Clob createClob() throws SQLException {
++		return connection.createClob();
++	}
++
++	public NClob createNClob() throws SQLException {
++		return connection.createNClob();
++	}
++
++	public SQLXML createSQLXML() throws SQLException {
++		return connection.createSQLXML();
++	}
++
++	public Struct createStruct(String typeName, Object[] attributes)
++			throws SQLException {
++		return connection.createStruct(typeName, attributes);
++	}
++
++	public Properties getClientInfo() throws SQLException {
++		return connection.getClientInfo();
++	}
++
++	public String getClientInfo(String name) throws SQLException {
++		return connection.getClientInfo(name);
++	}
++
++	public boolean isValid(int timeout) throws SQLException {
++		return connection.isValid(timeout);
++	}
++
++	public void setClientInfo(Properties properties)
++			throws SQLClientInfoException {
++		connection.setClientInfo(properties);
++	}
++
++	public void setClientInfo(String name, String value)
++			throws SQLClientInfoException {
++		connection.setClientInfo(name, value);
++	}
++
++	public boolean isWrapperFor(Class arg0) throws SQLException {
++		return connection.isWrapperFor(arg0);
++	}
++
++	public Object unwrap(Class arg0) throws SQLException {
++		return connection.unwrap(arg0);
+ 	}
+ }
+Index: src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/StatementAdapter.java
+===================================================================
+RCS file: /cvsroot/datatools/org.eclipse.datatools.connectivity/plugins/org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/StatementAdapter.java,v
+retrieving revision 1.1
+diff -u -r1.1 StatementAdapter.java
+--- org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/StatementAdapter.java	9 Dec 2005 21:13:16 -0000	1.1
++++ org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/StatementAdapter.java	28 Feb 2008 17:35:44 -0000
+@@ -160,4 +160,19 @@
+ 	public String toString() {
+ 		return statement.toString();
+ 	}
++	public boolean isClosed() throws SQLException {
++		return statement.isClosed();
++	}
++	public boolean isPoolable() throws SQLException {
++		return statement.isPoolable();
++	}
++	public boolean isWrapperFor(Class arg0) throws SQLException {
++		return statement.isWrapperFor(arg0);
++	}
++	public void setPoolable(boolean poolable) throws SQLException {
++		statement.setPoolable(poolable);
++	}
++	public Object unwrap(Class arg0) throws SQLException {
++		return statement.unwrap(arg0);
++	}
+ }
+Index: src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ResultSetAdapter.java
+===================================================================
+RCS file: /cvsroot/datatools/org.eclipse.datatools.connectivity/plugins/org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ResultSetAdapter.java,v
+retrieving revision 1.1
+diff -u -r1.1 ResultSetAdapter.java
+--- org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ResultSetAdapter.java	9 Dec 2005 21:13:16 -0000	1.1
++++ org.eclipse.datatools.connectivity.sqm.core/src/org/eclipse/datatools/connectivity/sqm/internal/core/connection/ResultSetAdapter.java	28 Feb 2008 17:35:44 -0000
+@@ -18,11 +18,14 @@
+ import java.sql.Blob;
+ import java.sql.Clob;
+ import java.sql.Date;
++import java.sql.NClob;
+ import java.sql.Ref;
+ import java.sql.ResultSet;
+ import java.sql.ResultSetMetaData;
++import java.sql.RowId;
+ import java.sql.SQLException;
+ import java.sql.SQLWarning;
++import java.sql.SQLXML;
+ import java.sql.Statement;
+ import java.sql.Time;
+ import java.sql.Timestamp;
+@@ -516,4 +519,184 @@
+ 	public boolean wasNull() throws SQLException {
+ 		return resultSet.wasNull();
+ 	}
++	public int getHoldability() throws SQLException {
++		return resultSet.getHoldability();
++	}
++	public Reader getNCharacterStream(int columnIndex) throws SQLException {
++		return resultSet.getNCharacterStream(columnIndex);
++	}
++	public Reader getNCharacterStream(String columnLabel) throws SQLException {
++		return resultSet.getNCharacterStream(columnLabel);
++	}
++	public NClob getNClob(int columnIndex) throws SQLException {
++		return resultSet.getNClob(columnIndex);
++	}
++	public NClob getNClob(String columnLabel) throws SQLException {
++		return resultSet.getNClob(columnLabel);
++	}
++	public String getNString(int columnIndex) throws SQLException {
++		return resultSet.getNString(columnIndex);
++	}
++	public String getNString(String columnLabel) throws SQLException {
++		return resultSet.getNString(columnLabel);
++	}
++	public RowId getRowId(int columnIndex) throws SQLException {
++		return resultSet.getRowId(columnIndex);
++	}
++	public RowId getRowId(String columnLabel) throws SQLException {
++		return resultSet.getRowId(columnLabel);
++	}
++	public SQLXML getSQLXML(int columnIndex) throws SQLException {
++		return resultSet.getSQLXML(columnIndex);
++	}
++	public SQLXML getSQLXML(String columnLabel) throws SQLException {
++		return resultSet.getSQLXML(columnLabel);
++	}
++	public boolean isClosed() throws SQLException {
++		return resultSet.isClosed();
++	}
++	public boolean isWrapperFor(Class arg0) throws SQLException {
++		return resultSet.isWrapperFor(arg0);
++	}
++	public Object unwrap(Class arg0) throws SQLException {
++		return resultSet.unwrap(arg0);
++	}
++	public void updateAsciiStream(int columnIndex, InputStream x, long length)
++			throws SQLException {
++		resultSet.updateAsciiStream(columnIndex, x, length);
++	}
++	public void updateAsciiStream(int columnIndex, InputStream x)
++			throws SQLException {
++		resultSet.updateAsciiStream(columnIndex, x);
++	}
++	public void updateAsciiStream(String columnLabel, InputStream x, long length)
++			throws SQLException {
++		resultSet.updateAsciiStream(columnLabel, x, length);
++	}
++	public void updateAsciiStream(String columnLabel, InputStream x)
++			throws SQLException {
++		resultSet.updateAsciiStream(columnLabel, x);
++	}
++	public void updateBinaryStream(int columnIndex, InputStream x, long length)
++			throws SQLException {
++		resultSet.updateBinaryStream(columnIndex, x, length);
++	}
++	public void updateBinaryStream(int columnIndex, InputStream x)
++			throws SQLException {
++		resultSet.updateBinaryStream(columnIndex, x);
++	}
++	public void updateBinaryStream(String columnLabel, InputStream x,
++			long length) throws SQLException {
++		resultSet.updateBinaryStream(columnLabel, x, length);
++	}
++	public void updateBinaryStream(String columnLabel, InputStream x)
++			throws SQLException {
++		resultSet.updateBinaryStream(columnLabel, x);
++	}
++	public void updateBlob(int columnIndex, InputStream inputStream, long length)
++			throws SQLException {
++		resultSet.updateBlob(columnIndex, inputStream, length);
++	}
++	public void updateBlob(int columnIndex, InputStream inputStream)
++			throws SQLException {
++		resultSet.updateBlob(columnIndex, inputStream);
++	}
++	public void updateBlob(String columnLabel, InputStream inputStream,
++			long length) throws SQLException {
++		resultSet.updateBlob(columnLabel, inputStream, length);
++	}
++	public void updateBlob(String columnLabel, InputStream inputStream)
++			throws SQLException {
++		resultSet.updateBlob(columnLabel, inputStream);
++	}
++	public void updateCharacterStream(int columnIndex, Reader x, long length)
++			throws SQLException {
++		resultSet.updateCharacterStream(columnIndex, x, length);
++	}
++	public void updateCharacterStream(int columnIndex, Reader x)
++			throws SQLException {
++		resultSet.updateCharacterStream(columnIndex, x);
++	}
++	public void updateCharacterStream(String columnLabel, Reader reader,
++			long length) throws SQLException {
++		resultSet.updateCharacterStream(columnLabel, reader, length);
++	}
++	public void updateCharacterStream(String columnLabel, Reader reader)
++			throws SQLException {
++		resultSet.updateCharacterStream(columnLabel, reader);
++	}
++	public void updateClob(int columnIndex, Reader reader, long length)
++			throws SQLException {
++		resultSet.updateClob(columnIndex, reader, length);
++	}
++	public void updateClob(int columnIndex, Reader reader) throws SQLException {
++		resultSet.updateClob(columnIndex, reader);
++	}
++	public void updateClob(String columnLabel, Reader reader, long length)
++			throws SQLException {
++		resultSet.updateClob(columnLabel, reader, length);
++	}
++	public void updateClob(String columnLabel, Reader reader)
++			throws SQLException {
++		resultSet.updateClob(columnLabel, reader);
++	}
++	public void updateNCharacterStream(int columnIndex, Reader x, long length)
++			throws SQLException {
++		resultSet.updateNCharacterStream(columnIndex, x, length);
++	}
++	public void updateNCharacterStream(int columnIndex, Reader x)
++			throws SQLException {
++		resultSet.updateNCharacterStream(columnIndex, x);
++	}
++	public void updateNCharacterStream(String columnLabel, Reader reader,
++			long length) throws SQLException {
++		resultSet.updateNCharacterStream(columnLabel, reader, length);
++	}
++	public void updateNCharacterStream(String columnLabel, Reader reader)
++			throws SQLException {
++		resultSet.updateNCharacterStream(columnLabel, reader);
++	}
++	public void updateNClob(int columnIndex, NClob clob) throws SQLException {
++		resultSet.updateNClob(columnIndex, clob);
++	}
++	public void updateNClob(int columnIndex, Reader reader, long length)
++			throws SQLException {
++		resultSet.updateNClob(columnIndex, reader, length);
++	}
++	public void updateNClob(int columnIndex, Reader reader) throws SQLException {
++		resultSet.updateNClob(columnIndex, reader);
++	}
++	public void updateNClob(String columnLabel, NClob clob) throws SQLException {
++		resultSet.updateNClob(columnLabel, clob);
++	}
++	public void updateNClob(String columnLabel, Reader reader, long length)
++			throws SQLException {
++		resultSet.updateNClob(columnLabel, reader, length);
++	}
++	public void updateNClob(String columnLabel, Reader reader)
++			throws SQLException {
++		resultSet.updateNClob(columnLabel, reader);
++	}
++	public void updateNString(int columnIndex, String string)
++			throws SQLException {
++		resultSet.updateNString(columnIndex, string);
++	}
++	public void updateNString(String columnLabel, String string)
++			throws SQLException {
++		resultSet.updateNString(columnLabel, string);
++	}
++	public void updateRowId(int columnIndex, RowId x) throws SQLException {
++		resultSet.updateRowId(columnIndex, x);
++	}
++	public void updateRowId(String columnLabel, RowId x) throws SQLException {
++		resultSet.updateRowId(columnLabel, x);
++	}
++	public void updateSQLXML(int columnIndex, SQLXML xmlObject)
++			throws SQLException {
++		resultSet.updateSQLXML(columnIndex, xmlObject);
++	}
++	public void updateSQLXML(String columnLabel, SQLXML xmlObject)
++			throws SQLException {
++		resultSet.updateSQLXML(columnLabel, xmlObject);
++	}
+ }
